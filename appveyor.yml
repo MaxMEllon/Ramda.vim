@@ -30,4 +30,4 @@ before_test:
       & $Env:THEMIS_VIM --version
 test_script:
   - ps: |
-      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath .\.vim --reporter dot
+      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath C:/projects/ramda-vim/.vim --reporter dot
