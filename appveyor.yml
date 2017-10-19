@@ -11,14 +11,10 @@ install:
 
   - ps: |
       git -c advice.detachedHead=false clone --quiet https://github.com/thinca/vim-themis --depth 1 $Env:TEMP\vim-themis
-
-      git -c advice.detachedHead=false clone --quiet https://github.com/vim-jp/vital.vim --depth 1              C:\projects\ramda-vim\.vim\pack\test\opt\vital.vim
-
-      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-vimlcompiler --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-vimlcompiler
-
-      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-safe-string  --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-safe-string
-
-      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-power-assert --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-power-assert
+      git -c advice.detachedHead=false clone --quiet https://github.com/vim-jp/vital.vim --depth 1 $Env:HOME\.vim\pack\test\opt\vital.vim
+      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-vimlcompiler --depth 1 $Env:HOME\.vim\pack\test\opt\vital-vimlcompiler
+      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-safe-string  --depth 1 $Env:HOME\.vim\pack\test\opt\vital-safe-string
+      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-power-assert --depth 1 $Env:HOME\.vim\pack\test\opt\vital-power-assert
 
       $zip = $Env:APPVEYOR_BUILD_FOLDER + '\vim.zip'
 
@@ -40,4 +36,4 @@ before_test:
 
 test_script:
   - ps: |
-      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath C:\projects\ramda-vim\.vim --reporter dot
+    & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath $Env:HOME\.vim --reporter dot
