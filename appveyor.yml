@@ -36,4 +36,4 @@ before_test:
 
 test_script:
   - ps: |
-    & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath $Env:HOME\.vim --reporter dot
+      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath $Env:HOME\.vim --reporter dot
