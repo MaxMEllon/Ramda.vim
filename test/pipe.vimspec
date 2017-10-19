@@ -1,0 +1,31 @@
+Describe pipe
+  Before all
+    let s:V = vital#of('vital')
+    " ramda
+    let s:Ramda = s:V.import('Ramda')
+    let g:R = s:Ramda.new()
+    " powerassert
+    let PowerAssert = s:V.import('Vim.PowerAssert')
+    let s:assert = PowerAssert.assert
+  End
+
+  It case-is-two-args
+    let result = g:R.pipe(
+          \  [1, 2, 3],
+          \  { l -> map(l, { k, v -> v + 1 }) },
+          \  { l -> filter(l, { k, v -> 2 < v }) }
+          \)
+    execute s:assert('result ==# [3, 4]')
+  End
+
+  It case-is-two-args-with-Ramda
+    let result = g:R.pipe(
+          \  [1, 2, 3],
+          \  g:R.map({ _, v -> v + 1 }),
+          \  g:R.filter({ _, v -> 3 < v }),
+          \)
+    execute s:assert('result ==# [4]')
+  End
+End
+
+" vim: foldmethod=marker
