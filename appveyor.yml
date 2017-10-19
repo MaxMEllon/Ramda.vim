@@ -1,0 +1,41 @@
+version: '{build}'
+build: off
+deploy: off
+skip_tags: true
+clone_depth: 1
+environment:
+  matrix:
+    - VIM_URL: http://vim-jp.org/redirects/koron/vim-kaoriya/latest/win64/
+
+install:
+
+  - ps: |
+      git -c advice.detachedHead=false clone --quiet https://github.com/thinca/vim-themis --depth 1 $Env:TEMP\vim-themis
+      git -c advice.detachedHead=false clone --quiet https://github.com/vim-jp/vital.vim --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vital.vim
+      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-vimlcompiler --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vital-vimlcompiler
+      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-safe-string  --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vital-safe-string
+      git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-power-assert --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vital-power-assert
+
+      dir $ENV:USERPROFILE\vimfiles\pack\test\opt
+
+      $zip = $Env:APPVEYOR_BUILD_FOLDER + '\vim.zip'
+
+      $vim = $Env:APPVEYOR_BUILD_FOLDER + '\vim\'
+
+      $redirect = Invoke-WebRequest -URI $Env:VIM_URL
+
+      (New-Object Net.WebClient).DownloadFile($redirect.Links[0].href, $zip)
+
+      [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
+
+      [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
+
+      $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
+
+before_test:
+  - ps: |
+      & $Env:THEMIS_VIM --version
+
+test_script:
+  - ps: |
+      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath $Env:USERPROFILE\vimfiles --reporter dot
