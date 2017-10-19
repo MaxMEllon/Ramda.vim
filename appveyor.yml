@@ -1,17 +1,20 @@
 version: '{build}'
+build: off
+deploy: off
+skip_tags: true
 clone_depth: 1
 environment:
   matrix:
-  - VIM_URL: http://vim-jp.org/redirects/koron/vim-kaoriya/latest/win64/
+    - VIM_URL: http://vim-jp.org/redirects/koron/vim-kaoriya/latest/win64/
 
 install:
-  - git clone --quiet https://github.com/thinca/vim-themis --branch v1.4.1 --single-branch --depth 1 themis
-  - git clone https://github.com/vim-jp/vital.vim --depth 1 .vim/pack/test/opt/vital.vim
-  - git clone https://github.com/haya14busa/vital-vimlcompiler --depth 1 .vim/pack/test/opt/vital-vimlcompiler
-  - git clone https://github.com/haya14busa/vital-safe-string --depth 1  .vim/pack/test/opt/vital-safe-string
-  - git clone https://github.com/haya14busa/vital-power-assert --depth 1 .vim/pack/test/opt/vital-power-assert
-
   - ps: |
+      git clone --quiet https://github.com/thinca/vim-themis --depth 1 $Env:TEMP\vim-themis
+      git clone --quiet https://github.com/vim-jp/vital.vim --depth 1              .vim/pack/test/opt/vital.vim
+      git clone --quiet https://github.com/haya14busa/vital-vimlcompiler --depth 1 .vim/pack/test/opt/vital-vimlcompiler
+      git clone --quiet https://github.com/haya14busa/vital-safe-string  --depth 1 .vim/pack/test/opt/vital-safe-string
+      git clone --quiet https://github.com/haya14busa/vital-power-assert --depth 1 .vim/pack/test/opt/vital-power-assert
+
       $zip = $Env:APPVEYOR_BUILD_FOLDER + '\vim.zip'
       $vim = $Env:APPVEYOR_BUILD_FOLDER + '\vim\'
 
@@ -22,8 +25,10 @@ install:
       [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
 
       $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
-test_script:
+before_test:
   - ps: |
       & $Env:THEMIS_VIM --version
-      .\themis\bin\themis.bat --runtimepath .vim --reporter dot
-deploy: off
+test_script:
+  - ps: |
+      & 
+      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath .vim --reporter dot
