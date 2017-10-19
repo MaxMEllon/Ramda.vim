@@ -11,7 +11,7 @@ install:
 
   - ps: |
       git -c advice.detachedHead=false clone --quiet https://github.com/thinca/vim-themis --depth 1 $Env:TEMP\vim-themis
-      git -c advice.detachedHead=false clone --quiet https://github.com/vim-jp/vital.vim --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vitalvimfiles
+      git -c advice.detachedHead=false clone --quiet https://github.com/vim-jp/vital.vim --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vital.vim
       git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-vimlcompiler --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vital-vimlcompiler
       git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-safe-string  --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vital-safe-string
       git -c advice.detachedHead=false clone --quiet https://github.com/haya14busa/vital-power-assert --depth 1 $Env:USERPROFILE\vimfiles\pack\test\opt\vital-power-assert
