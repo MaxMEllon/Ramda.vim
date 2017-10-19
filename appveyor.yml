@@ -10,10 +10,10 @@ environment:
 install:
   - ps: |
       git clone --quiet https://github.com/thinca/vim-themis --depth 1 $Env:TEMP\vim-themis
-      git clone --quiet https://github.com/vim-jp/vital.vim --depth 1              .vim\pack\test\opt\vital.vim
-      git clone --quiet https://github.com/haya14busa/vital-vimlcompiler --depth 1 .vim\pack\test\opt\vital-vimlcompiler
-      git clone --quiet https://github.com/haya14busa/vital-safe-string  --depth 1 .vim\pack\test\opt\vital-safe-string
-      git clone --quiet https://github.com/haya14busa/vital-power-assert --depth 1 .vim\pack\test\opt\vital-power-assert
+      git clone --quiet https://github.com/vim-jp/vital.vim --depth 1              .\.vim\pack\test\opt\vital.vim
+      git clone --quiet https://github.com/haya14busa/vital-vimlcompiler --depth 1 .\.vim\pack\test\opt\vital-vimlcompiler
+      git clone --quiet https://github.com/haya14busa/vital-safe-string  --depth 1 .\.vim\pack\test\opt\vital-safe-string
+      git clone --quiet https://github.com/haya14busa/vital-power-assert --depth 1 .\.vim\pack\test\opt\vital-power-assert
 
       $zip = $Env:APPVEYOR_BUILD_FOLDER + '\vim.zip'
       $vim = $Env:APPVEYOR_BUILD_FOLDER + '\vim\'
@@ -30,4 +30,4 @@ before_test:
       & $Env:THEMIS_VIM --version
 test_script:
   - ps: |
-      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath .vim --reporter dot
+      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath .\.vim --reporter dot
