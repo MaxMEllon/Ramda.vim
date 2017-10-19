@@ -8,26 +8,36 @@ environment:
     - VIM_URL: http://vim-jp.org/redirects/koron/vim-kaoriya/latest/win64/
 
 install:
-  git clone https://github.com/thinca/vim-themis --depth 1 $Env:TEMP\vim-themis
-  git clone https://github.com/vim-jp/vital.vim --depth 1              C:\projects\ramda-vim\.vim\pack\test\opt\vital.vim
-  git clone https://github.com/haya14busa/vital-vimlcompiler --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-vimlcompiler
-  git clone https://github.com/haya14busa/vital-safe-string  --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-safe-string
-  git clone https://github.com/haya14busa/vital-power-assert --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-power-assert
 
-  - ps: |
+  - ps: >-
+      git clone https://github.com/thinca/vim-themis --depth 1 $Env:TEMP\vim-themis
+
+      git clone https://github.com/vim-jp/vital.vim --depth 1              C:\projects\ramda-vim\.vim\pack\test\opt\vital.vim
+
+      git clone https://github.com/haya14busa/vital-vimlcompiler --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-vimlcompiler
+
+      git clone https://github.com/haya14busa/vital-safe-string  --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-safe-string
+
+      git clone https://github.com/haya14busa/vital-power-assert --depth 1 C:\projects\ramda-vim\.vim\pack\test\opt\vital-power-assert
+
       $zip = $Env:APPVEYOR_BUILD_FOLDER + '\vim.zip'
+
       $vim = $Env:APPVEYOR_BUILD_FOLDER + '\vim\'
 
       $redirect = Invoke-WebRequest -URI $Env:VIM_URL
+
       (New-Object Net.WebClient).DownloadFile($redirect.Links[0].href, $zip)
 
       [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
+
       [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
 
       $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
+
 before_test:
   - ps: |
       & $Env:THEMIS_VIM --version
+
 test_script:
   - ps: |
-      & $Env:TEMP\vim-themis\bin\themis.bat --runtimepath C:\projects\ramda-vim\.vim --reporter dot
+      $Env:TEMP\vim-themis\bin\themis.bat --runtimepath C:\projects\ramda-vim\.vim --reporter dot
