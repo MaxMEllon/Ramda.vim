@@ -10,6 +10,7 @@ install:
   - git clone https://github.com/haya14busa/vital-vimlcompiler --depth 1 .vim/pack/test/opt/vital-vimlcompiler
   - git clone https://github.com/haya14busa/vital-safe-string --depth 1  .vim/pack/test/opt/vital-safe-string
   - git clone https://github.com/haya14busa/vital-power-assert --depth 1 .vim/pack/test/opt/vital-power-assert
+
   - ps: |
       $zip = $Env:APPVEYOR_BUILD_FOLDER + '\vim.zip'
       $vim = $Env:APPVEYOR_BUILD_FOLDER + '\vim\'
@@ -21,10 +22,8 @@ install:
       [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
 
       $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
-
-
 test_script:
-- ps: |
-    & $Env:THEMIS_VIM --version
-    .\bin\themis.bat --runtimepath .vim --reporter dot
+  - ps: |
+      & $Env:THEMIS_VIM --version
+      .\themis\bin\themis.bat --runtimepath .vim --reporter dot
 deploy: off
