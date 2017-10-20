@@ -14,6 +14,40 @@ This plugin is inspired by [Underscore.vim](https://github.com/haya14busa/unders
 
 Ramda.vim support your functional programming by Vim script.
 
+Installation
+---
+
+[Neobundle](https://github.com/Shougo/neobundle.vim) / [Vundle](https://github.com/gmarik/Vundle.vim) / [vim-plug](https://github.com/junegunn/vim-plug)
+
+1. Install [vital.vim](https://github.com/vim-jp/vital.vim) and Ramda.vim with any plugin manager.
+
+```vim
+NeoBundle 'vim-jp/vital.vim'
+NeoBundle 'MaxMEllon/Ramda.vim'
+
+Plugin 'vim-jp/vital.vim'
+Plugin 'MaxMEllon/Ramda.vim'
+
+Plug 'vim-jp/vital.vim'
+Plug 'MaxMEllon/Ramda.vim'
+```
+
+2. Embed Ramda.vim into your plugin with :Vitalize.
+
+```vim
+:Vitalize . --name={plugin_name} Ramda
+```
+
+3. Import Ramda.vim in your plugins.
+
+```vim
+let s:V = vital#of('vital')
+let s:R = s:V.import('Ramda').new()
+echo s:R.pipe([1, 2, 3], s:R.map({ _, v -> v + 2 }), s:R.filter({ _.v -> 4 <= v }))
+" => [4, 5]
+```
+
+
 Requirements
 ---
 - Vim 8.0.0039 or above. (need `has('lambda')`)

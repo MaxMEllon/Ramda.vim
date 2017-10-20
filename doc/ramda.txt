@@ -1,0 +1,99 @@
+*ramda.txt*						*ramda.vim*
+
+Author: MaxMEllon <maxmellon1994@gmail.com>
+Version 0.1.0
+Support: Vim 8.0.0039 or above
+License: MIT License
+
+CONTENTS						*ramda-contents*
+
+	Introduction					|ramda-introduction|
+	Install						|ramda-install|
+	Usage						|ramda-usage|
+	Collections					|ramda-collections|
+	Changelog					|ramda-changelog|
+
+
+=============================================================================
+INSTALL							*ramda-install*
+
+	1. Install |vital.vim| and |ramda.vim| with any plugin manager.
+
+>
+		NeoBundle 'vim-jp/vital.vim'
+		NeoBundle 'MaxMEllon/Ramda.vim'
+
+		Plugin 'vim-jp/vital.vim'
+		Plugin 'MaxMEllon/Ramda.vim'
+
+		Plug 'vim-jp/vital.vim'
+		Plug 'MaxMEllon/Ramda.vim'
+<
+
+	2. Embed Ramda.vim into your plugin with |:Vitalize|. >
+		:Vitalize . --name={plugin_name} Ramda
+<
+
+	3. Import Ramda.vim in your plugins.
+
+>
+		let s:V = vital#of('vital')
+		let s:R = s:V.import('Ramda').new()
+<
+
+=============================================================================
+USAGE							*ramda-usage*
+
+	Import ramdaobject (`s:R`) like this.
+>
+		let s:V = vital#of('vital')
+		let s:R = s:V.import('Ramda').new()
+<
+=============================================================================
+COLLECTIONS						*ramda-collections*
+
+R.each({func}, {list})				*ramda-each* *ramda-for_each*
+R.each({func})					*R.each()* *R.for_each()*
+
+>
+	call s:R.each({ itr -> execute('echo itr') }, [1, 2, 3])
+	" 1 (logs)
+	" 2 (logs)
+	" 3 (logs)
+<
+
+>
+	let s:func = s:R.each({ itr -> execute('echo itr') })
+	call s:func([1, 2, 3])
+	" 1 (logs)
+	" 2 (logs)
+	" 3 (logs)
+	call s:func([4, 5, 6])
+	" 4 (logs)
+	" 5 (logs)
+	" 6 (logs)
+<
+
+R.map({func}, {list})				*ramda-each* *ramda-for_each*
+R.map({func})					*R.each()* *R.for_each()*
+
+>
+	let result = g:R.map({ k, v -> v + 1 }, [1, 2, 3])
+	" => [2, 3, 4]
+<
+
+>
+	let s:func = g:R.map({ k, v -> v + 1 })
+	call s:func([1, 2, 3])
+	" => [2, 3, 4]
+	call s:func([3, 4, 5])
+	" => [4, 5, 6]
+<
+
+=============================================================================
+CHANGELOG						*ramda-changelog*
+
+
+=============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:fdm=marker:
+
