@@ -1,11 +1,11 @@
-*ramda.txt*						*ramda.vim*
+*ramda.txt*							*ramda.vim*
 
 Author: MaxMEllon <maxmellon1994@gmail.com>
 Version 0.1.0
 Support: Vim 8.0.0039 or above
 License: MIT License
 
-CONTENTS						*ramda-contents*
+CONTENTS							*ramda-contents*
 
 	Introduction					|ramda-introduction|
 	Install						|ramda-install|
@@ -15,7 +15,7 @@ CONTENTS						*ramda-contents*
 
 
 =============================================================================
-INSTALL							*ramda-install*
+INSTALL								*ramda-install*
 
 	1. Install |vital.vim| and |ramda.vim| with any plugin manager.
 
@@ -42,7 +42,7 @@ INSTALL							*ramda-install*
 <
 
 =============================================================================
-USAGE							*ramda-usage*
+USAGE								*ramda-usage*
 
 	Import ramdaobject (`s:R`) like this.
 >
@@ -88,6 +88,27 @@ R.map({func})					*R.each()* *R.for_each()*
 	" => [2, 3, 4]
 	call s:func([3, 4, 5])
 	" => [4, 5, 6]
+<
+
+R.reducer({func}, {initalValue}, {list})			*ramda-reduce*
+R.reducer({func}, {initalValue})				*R.reduce()*
+R.reducer({func})
+
+
+>
+	call g:R.reduce({ memo, a -> memo + a }, 0, [1, 2, 3])
+	" => 5
+<
+
+>
+	let Sum = g:R.reduce({ memo, a -> memo + a })(0)
+	call Sum([1, 2, 3, 4, 5])
+	" => 15
+<
+
+>
+	call g:R.reduce({ memo, a -> memo + a })(3)([2, 3, 4])
+	" => 12
 <
 
 =============================================================================
