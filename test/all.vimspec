@@ -1,0 +1,23 @@
+Describe all
+  Before all
+    let s:V = vital#of('vital')
+    " ramda
+    let s:Ramda = s:V.import('Ramda')
+    let g:R = s:Ramda.new()
+    " powerassert
+    let PowerAssert = s:V.import('Vim.PowerAssert')
+    let s:assert = PowerAssert.assert
+  End
+
+  It case-is-two-args
+    let result = g:R.all({ itr -> itr == 3 }, [3, 3, 3])
+    execute s:assert('result is g:R.T()')
+  End
+
+  It case-is-one-args
+    let Is_all_equal3 = g:R.all({ itr -> itr == 3 })
+    execute s:assert('Is_all_equal3([3, 3, 3, 3, 1]) is g:R.F()')
+  End
+End
+
+" vim: foldmethod=marker
