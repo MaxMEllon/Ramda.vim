@@ -125,9 +125,7 @@ endfunction
 "}}}
 "
 function! s:R.all(...)
-
   let F = a:1
-
   if a:0 is 1
     return { xs -> s:all(xs, F) }
   elseif a:0 is 2
@@ -180,7 +178,7 @@ function! s:R.is_string(...) abort
   elseif a:0 is 1
     return type(a:x) is type('')
   else
-    throw 'R.all expected 2 args, but actual ' . a:0 . ' args.'
+    throw 'R.all expected 1 args, but actual ' . a:0 . ' args.'
   endif
 endfunction
 
