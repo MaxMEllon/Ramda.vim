@@ -14,10 +14,6 @@ function! s:new() abort
   return deepcopy(s:R)
 endfunction
 
-function! New() abort
-  return deepcopy(s:R)
-endfunction
-
 " R.each {{{
 " Usage:
 "   R.each(function)
