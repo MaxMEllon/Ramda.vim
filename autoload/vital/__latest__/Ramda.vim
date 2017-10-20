@@ -27,6 +27,8 @@ function! s:R.each(...) abort
     return { xs -> s:E(xs, F) }
   elseif a:0 is 2
     call s:E(a:2, F)
+  else
+    throw 'R.each expected 1~2 args, but actual ' . a:0 . ' args.'
   endif
 endfunction
 
@@ -51,7 +53,7 @@ function! s:R.map(...) abort
   elseif a:0 is 2
     return map(a:2, a:1)
   else
-    throw 'R.map expected 2 args, but actual ' . a:0 . ' args.'
+    throw 'R.map expected 1~2 args, but actual ' . a:0 . ' args.'
   endif
 endfunction
 "}}}
@@ -73,7 +75,7 @@ function! s:R.filter(...) abort
   elseif a:0 is 2
     return filter(a:2, a:1)
   else
-    throw 'R.filter expected 2 args, but actual ' . a:0 . ' args.'
+    throw 'R.filter expected 1~2 args, but actual ' . a:0 . ' args.'
   endif
 endfunction
 "}}}
@@ -131,12 +133,15 @@ function! s:R.all(...)
   elseif a:0 is 2
     return s:all(a:2, F)
   else
-    throw 'R.all expected 2 args, but actual ' . a:0 . ' args.'
+    throw 'R.all expected 1~2 args, but actual ' . a:0 . ' args.'
   endif
 endfunction
 "}}}
 
 " R.reduce {{{
+" Usage:
+"   R.reduce(func, initalValue, list)
+"
 function! s:__reduce(xs, initalValue, F) "{{{
   let memo = a:initalValue
   for x in a:xs
@@ -155,6 +160,8 @@ function! s:R.reduce(...) abort
     return { xs -> s:__reduce(xs, a:2, F) }
   elseif a:0 is 3
     return s:__reduce(a:3, a:2, F)
+  else
+    throw 'R.reduce expected 1~3 args, but actual ' . a:0 . ' args.'
   endif
 endfunction
 "}}}
