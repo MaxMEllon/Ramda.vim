@@ -90,6 +90,27 @@ R.map({func})					*R.each()* *R.for_each()*
 	" => [4, 5, 6]
 <
 
+R.reducer({func}, {initalValue}, {list})	*ramda-reduce*
+R.reducer({func}, {initalValue})		*R.reduce()*
+R.reducer({func})
+
+
+>
+	call g:R.reduce({ memo, a -> memo + a }, 0, [1, 2, 3])
+	" => 5
+<
+
+>
+	let Sum = g:R.reduce({ memo, a -> memo + a })(0)
+	call Sum([1, 2, 3, 4, 5])
+	" => 15
+<
+
+>
+	call g:R.reduce({ memo, a -> memo + a })(3)([2, 3, 4])
+	" => 12
+<
+
 =============================================================================
 CHANGELOG						*ramda-changelog*
 

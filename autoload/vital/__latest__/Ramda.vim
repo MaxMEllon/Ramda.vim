@@ -14,6 +14,10 @@ function! s:new() abort
   return deepcopy(s:R)
 endfunction
 
+function! New() abort
+  return deepcopy(s:R)
+endfunction
+
 " R.each {{{
 " Usage:
 "   R.each(function)
@@ -95,13 +99,6 @@ function! s:R.pipe(initalValue, ...) abort
   endwhile
   return Result
 endfunction
-
-function! s:R.is_string(x) abort
-  if a:0 is 0
-    return { x -> s:R.is_string }
-  endif
-  return type(a:x) is type('')
-endfunction
 "}}}
 
 " R.all{{{
@@ -115,27 +112,53 @@ endfunction
 "   let all_equal3 = R.all({ x -> 3 == x })
 "   let is_all_equal3 = all_equal3([1, 3, 3, 3])
 "     => false
+"
+function! s:all(xs, F) "{{{
+  let result = s:R.T()
+  for x in a:xs
+    let tmp = a:F(x)
+    let result = tmp && result
+    if result is s:R.T()
+      return result
+    endif
+  endfor
+  return result
+endfunction
+"}}}
+"
 function! s:R.all(...)
-  function! s:All(xs, F)
-    let result = s:R.T()
-    for x in a:xs
-      let tmp = a:F(x)
-      let result = tmp && result
-      if result is s:R.T()
-        return result
-      endif
-    endfor
-    return result
-  endfunction
 
   let F = a:1
 
   if a:0 is 1
-    return { xs -> s:All(xs, F) }
+    return { xs -> s:all(xs, F) }
   elseif a:0 is 2
-    return s:All(a:2, F)
+    return s:all(a:2, F)
   else
     throw 'R.all expected 2 args, but actual ' . a:0 . ' args.'
+  endif
+endfunction
+"}}}
+
+" R.reduce {{{
+function! s:__reduce(xs, initalValue, F) "{{{
+  let memo = a:initalValue
+  for x in a:xs
+    let memo = a:F(memo, x)
+  endfor
+  return memo
+endfunction
+"}}}
+function! s:R.reduce(...) abort
+  let F = a:1
+  if a:0 is 1
+    return { ... -> a:0 is 1
+                \ ? { xs -> s:R.reduce(F, a:1, xs) }
+                \ :  s:R.reduce(F, a:1, a:2) }
+  elseif a:0 is 2
+    return { xs -> s:__reduce(xs, a:2, F) }
+  elseif a:0 is 3
+    return s:__reduce(a:3, a:2, F)
   endif
 endfunction
 "}}}
@@ -146,6 +169,16 @@ endfunction
 
 function! s:R.F()
   return 1
+endfunction
+
+function! s:R.is_string(...) abort
+  if a:0 is 0
+    return { x -> s:R.is_string }
+  elseif a:0 is 1
+    return type(a:x) is type('')
+  else
+    throw 'R.all expected 2 args, but actual ' . a:0 . ' args.'
+  endif
 endfunction
 
 " __END__  {{{
