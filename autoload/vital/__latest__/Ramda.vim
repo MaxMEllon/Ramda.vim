@@ -164,6 +164,23 @@ function! s:R.reduce(...) abort
 endfunction
 "}}}
 
+" R.reduce_right{{{
+function! s:R.reduce_right(...)
+  let F = a:1
+  if a:0 is 1
+    return { ... -> a:0 is 1
+                \ ? { xs -> s:R.reduce_right(F, a:1, xs) }
+                \ :  s:R.reduce_right(F, a:1, a:2) }
+  elseif a:0 is 2
+    return { xs -> s:__reduce(recerse(xs), a:2, F) }
+  elseif a:0 is 3
+    return s:__reduce(reverse(a:3), a:2, F)
+  else
+    throw 'R.reduce_right expected 1~3 args, but actual ' . a:0 . ' args.'
+  endif
+endfunction
+"}}}
+
 function! s:R.T()
   return !0
 endfunction
