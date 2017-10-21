@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./.github/logo.png" alt="logo" width="300px" />
+</div>
+
 Ramda.vim
 ---
 [![Travis CI](https://img.shields.io/travis/MaxMEllon/Ramda.vim/master.svg?style=flat-square&label=Travis%20CI)](https://travis-ci.org/MaxMEllon/Ramda.vim)
