@@ -1,0 +1,29 @@
+Describe find
+  Before all
+    let s:V = vital#of('vital')
+    " ramda
+    let s:Ramda = s:V.import('Ramda')
+    let g:R = s:Ramda.new()
+    " powerassert
+    let PowerAssert = s:V.import('Vim.PowerAssert')
+    let s:assert = PowerAssert.assert
+  End
+
+  It case-is-one-args
+    let result = g:R.find({ v -> type(v) is type('') })(g:R.F())([1, 2, '3'])
+    execute s:assert('result ==# "3"')
+
+    let result = g:R.find({ v -> type(v) is type('') })(g:R.F(), [1, 2, '3'])
+    execute s:assert('result ==# "3"')
+  End
+
+  It case-is-two-args
+    let result = g:R.find({ v -> type(v) is type('') }, g:R.F())([1, 2, '3'])
+    execute s:assert('result ==# "3"')
+  End
+
+  It case-is-three-args
+    let result = g:R.find({ v -> type(v) is type('') }, g:R.F(), [1, 2, '3'])
+    execute s:assert('result ==# "3"')
+  End
+End
