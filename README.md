@@ -9,12 +9,12 @@ Ramda.vim
 [![AppVayor](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?style=flat-square&label=AppVeyor)](https://ci.appveyor.com/project/MaxMEllon/ramda-vim)
 ![Support Vim 8.0.0039 or above](https://img.shields.io/badge/support-Vim%208.0.0039%20or%20above-yellowgreen.svg?style=flat-square)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Doc](https://img.shields.io/badge/doc%20-%3Ah%20vim--fzy--rails-red.svg?style=flat-square)](./doc/Ramda.vim.txt)
+[![Doc](https://img.shields.io/badge/doc%20-%3Ah%20Ramda.vim-red.svg?style=flat-square)](./doc/ramda.txt)
 
 About
 ---
 
-This plugin is inspired by [Underscore.vim](https://github.com/haya14busa/underscore.vim) and [Ramda](http://ramdajs.com``).
+This plugin is inspired by [Underscore.vim](https://github.com/haya14busa/underscore.vim) and [Ramda](http://ramdajs.com).
 
 Ramda.vim support your functional programming by Vim script.
 
