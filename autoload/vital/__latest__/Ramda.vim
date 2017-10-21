@@ -5,6 +5,7 @@ set cpo&vim
 " }}}
 
 let s:R = {}
+let s:r = {}
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
@@ -14,10 +15,16 @@ function! s:new() abort
   return deepcopy(s:R)
 endfunction
 
+function! New() abort
+  return deepcopy(s:R)
+endfunction
+
 " R.each {{{
 " Usage:
-"   R.each(function)
-"   R.each(function, list)
+"   R.each({func})
+"     " => <lambda>
+"   R.each({func}, {list})
+"     " => <list>
 "
 function! s:R.each(...) abort
   let F = a:1
@@ -38,14 +45,10 @@ let s:R.for_each = s:R.each
 
 " R.map{{{
 " Usage:
-"   R.map(function)
-"   R.map(function, list)
-"
-" Example:
-"   R.map({ k, v -> v + 1 })
-"     => <lambda>({ arr -> map(arr, { k, v -> v + 1 }) })
-"   R.map({ k, v -> v + 1 }, [1, 2, 3])
-"     => [2, 3, 4]
+"   R.map({func})
+"     " => <lambda>
+"   R.map({func}, {list})
+"     " => <list>
 "
 function! s:R.map(...) abort
   if a:0 is 1
@@ -60,14 +63,10 @@ endfunction
 
 " R.filter{{{
 " Usage:
-"   R.filter(function)
-"   R.filter(function, list)
-"
-" Example:
-"   R.filter({ k, v -> 0 < v })
-"     => <lambda>({ arr -> map(arr, { k, v -> 0 < v }) })
-"   R.filter({ k, v -> 0 < v }, [0, 1, 2])
-"     => [1, 2]
+"   R.filter({func})
+"     " => <lambda>
+"   R.filter({func}, {list})
+"     " => <list>
 "
 function! s:R.filter(...) abort
   if a:0 is 1
@@ -82,36 +81,27 @@ endfunction
 
 " R.pipe{{{
 " Usage:
-"   R.pipe(initalValue, func, func, ...)
+"   R.pipe([ {func1}, {func2}, ... ])
+"     " => <lambda>
 "
-" Example:
-"   R.pipe([1, 2, 3], R.map({ _, v -> v + 1 }, R.filter({ _, v -> 2 < v })))
-"
-function! s:R.pipe(initalValue, ...) abort
-  let Result = a:initalValue
-  let j = 0
-  while j < a:0
-    let Func = a:000[j]
-    let Result = l:Func(Result)
-    let j += 1
-  endwhile
-  return Result
+function! s:r.pipe(x, fs) abort
+  let [F; fs] = a:fs
+  return len(a:fs) is 1 ? F(a:x) : F(s:r.pipe(a:x, fs))
+endfunction
+
+function! s:R.pipe(fs) abort
+  return { x -> s:r.pipe(x, reverse(a:fs)) }
 endfunction
 "}}}
 
 " R.all{{{
 " Usage:
-"   R.all(func)
-"   R.all(func, list)
+"   R.all({func})
+"     " => <lambda>
+"   R.all({func}, {list})
+"     " => <bool>
 "
-" Example:
-"   R.all({ x -> 3 == x }, [3, 3, 3, 3])
-"     => true
-"   let all_equal3 = R.all({ x -> 3 == x })
-"   let is_all_equal3 = all_equal3([1, 3, 3, 3])
-"     => false
-"
-function! s:all(xs, F) "{{{
+function! s:r.all(xs, prev, F) "{{{
   let result = s:R.T()
   for x in a:xs
     let tmp = a:F(x)
@@ -127,9 +117,9 @@ endfunction
 function! s:R.all(...)
   let F = a:1
   if a:0 is 1
-    return { xs -> s:all(xs, F) }
+    return { xs -> s:r.all(xs, s:R.T(), F) }
   elseif a:0 is 2
-    return s:all(a:2, F)
+    return s:r.all(a:2, s:R.T(), F)
   else
     throw 'R.all expected 1~2 args, but actual ' . a:0 . ' args.'
   endif
@@ -138,14 +128,16 @@ endfunction
 
 " R.reduce {{{
 " Usage:
-"   R.reduce(func, initalValue, list)
+"   R.reduce({func})
+"     " => <lambda>
+"   R.reduce({func}, {val})
+"     " => <lambda>
+"   R.reduce({func}, {val}, {list})
+"     " => {val}
 "
-function! s:__reduce(xs, initalValue, F) "{{{
-  let memo = a:initalValue
-  for x in a:xs
-    let memo = a:F(memo, x)
-  endfor
-  return memo
+function! s:r.reduce(xs, prev, F) "{{{
+  let [x; xs] = a:xs
+  return len(a:xs) is 1 ? a:F(a:prev, x) : s:r.reduce(xs, a:F(a:prev, x), a:F)
 endfunction
 "}}}
 function! s:R.reduce(...) abort
@@ -155,16 +147,25 @@ function! s:R.reduce(...) abort
                 \ ? { xs -> s:R.reduce(F, a:1, xs) }
                 \ :  s:R.reduce(F, a:1, a:2) }
   elseif a:0 is 2
-    return { xs -> s:__reduce(xs, a:2, F) }
+    return { xs -> s:r.reduce(xs, a:2, F) }
   elseif a:0 is 3
-    return s:__reduce(a:3, a:2, F)
+    return s:r.reduce(a:3, a:2, F)
   else
     throw 'R.reduce expected 1~3 args, but actual ' . a:0 . ' args.'
   endif
 endfunction
+
+let s:R.fold = s:R.reduce
 "}}}
 
 " R.reduce_right{{{
+" Usage:
+"   R.reduce({func})
+"     " => <lambda>
+"   R.reduce({func}, {val})
+"     " => <lambda>
+"   R.reduce({func}, {val}, {list})
+"     " => {val}
 function! s:R.reduce_right(...)
   let F = a:1
   if a:0 is 1
@@ -172,13 +173,15 @@ function! s:R.reduce_right(...)
                 \ ? { xs -> s:R.reduce_right(F, a:1, xs) }
                 \ :  s:R.reduce_right(F, a:1, a:2) }
   elseif a:0 is 2
-    return { xs -> s:__reduce(recerse(xs), a:2, F) }
+    return { xs -> s:r.reduce(recerse(xs), a:2, F) }
   elseif a:0 is 3
-    return s:__reduce(reverse(a:3), a:2, F)
+    return s:r.reduce(reverse(a:3), a:2, F)
   else
     throw 'R.reduce_right expected 1~3 args, but actual ' . a:0 . ' args.'
   endif
 endfunction
+
+let s:R.foldr = s:R.reduce_right
 "}}}
 
 function! s:R.T()
@@ -190,13 +193,7 @@ function! s:R.F()
 endfunction
 
 function! s:R.is_string(...) abort
-  if a:0 is 0
-    return { x -> s:R.is_string }
-  elseif a:0 is 1
-    return type(a:x) is type('')
-  else
-    throw 'R.all expected 1 args, but actual ' . a:0 . ' args.'
-  endif
+  return type(a:x) is type('')
 endfunction
 
 " __END__  {{{
