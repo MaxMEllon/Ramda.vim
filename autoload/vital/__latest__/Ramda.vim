@@ -180,12 +180,50 @@ endfunction
 let s:R.foldr = s:R.reduce_right
 "}}}
 
+" R.find{{{
+" Usage:
+"   R.find({func})
+"     " => <lambda>
+"   R.find({func}, {val})
+"     " => <lambda>
+"   R.find({func}, {val}, {list})
+"     " => {val}
+
+function! s:r.find(xs, default, F) abort
+  for x in a:xs
+    if a:F(x) is s:R.T()
+      return x
+    endif
+  endfor
+  return a:default
+endfunction
+
+function! s:R.find(...) abort
+  let F = a:1
+  if a:0 is 1
+    return { ... -> a:0 is 1
+                \ ? { xs -> s:R.find(F, a:1, xs) }
+                \ : s:R.find(F, a:1, a:2) }
+  elseif a:0 is 2
+    return { xs -> s:r.find(xs, a:2, F) }
+  elseif a:0 is 3
+    return s:r.find(a:3, a:2, F)
+  else
+    throw 'R.find expected 1~3 args, but actual ' . a:0 . 'args.'
+  endif
+endfunction
+"}}}
+
 function! s:R.T()
   return !0
 endfunction
 
 function! s:R.F()
   return 1
+endfunction
+
+function! s:R.Null()
+  return 9223372036854775806
 endfunction
 
 function! s:R.is_string(...) abort

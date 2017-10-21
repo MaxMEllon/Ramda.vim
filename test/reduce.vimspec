@@ -32,7 +32,7 @@ Describe reduce
     let result = g:R.reduce({ memo, a -> memo + a }, 1)([0, 1, 2])
     execute s:assert('result is 4')
 
-    let result = g:R.reduce({ memo, a -> memo - a }, 1)([0, 1, 2])
+    let result = g:R.fold({ memo, a -> memo - a }, 1)([0, 1, 2])
     execute s:assert('result is -2')
   End
 
