@@ -90,10 +90,9 @@ R.map({func})					*R.each()* *R.for_each()*
 	" => [4, 5, 6]
 <
 
-R.reducer({func}, {initalValue}, {list})			*ramda-reduce*
-R.reducer({func}, {initalValue})				*R.reduce()*
-R.reducer({func})
-
+R.reduce({func}, {initalValue}, {list})				*ramda-reduce*
+R.reduce({func}, {initalValue})					*R.reduce()*
+R.reduce({func})
 
 >
 	call g:R.reduce({ memo, a -> memo + a }, 0, [1, 2, 3])
@@ -109,6 +108,15 @@ R.reducer({func})
 >
 	call g:R.reduce({ memo, a -> memo + a })(3)([2, 3, 4])
 	" => 12
+<
+
+R.reduce_right({func}, {initalValue}, {list})		*ramda-reduce_right*
+R.reduce_right({func}, {initalValue})			*R.reduce_right()*
+R.reduce_right({func})
+
+>
+	call g:R.reduce({ memo, a -> memo 0 a }, 100, [3, 3, 3])
+	" => 91
 <
 
 =============================================================================
