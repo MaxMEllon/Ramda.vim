@@ -20,7 +20,7 @@ Describe reduce-right
   End
 
   It case-is-three-args
-    let result = g:R.reduce_right({ memo, a -> memo - a }, 100, [5, 5, 5])
+    let result = g:R.foldr({ memo, a -> memo - a }, 100, [5, 5, 5])
     execute s:assert('result is 85')
   End
 End
