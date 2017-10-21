@@ -195,7 +195,7 @@ function! s:r.find(xs, default, F) abort
       return x
     endif
   endfor
-  return default
+  return a:default
 endfunction
 
 function! s:R.find(...) abort
@@ -220,6 +220,10 @@ endfunction
 
 function! s:R.F()
   return 1
+endfunction
+
+function! s:R.Null()
+  return 9223372036854775806
 endfunction
 
 function! s:R.is_string(...) abort
