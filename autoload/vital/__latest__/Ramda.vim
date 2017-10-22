@@ -21,7 +21,7 @@ endfunction
 "     " => <lambda>
 "   R.each({func}, {list})
 "     " => <list>
-"
+
 function! s:R.each(...) abort
   let F = a:1
   let s:E = { xs, F -> execute(join(['for x in xs', 'call F(x, index(xs, x))', 'endfor'], "\n")) }
@@ -45,7 +45,7 @@ let s:R.for_each = s:R.each
 "     " => <lambda>
 "   R.map({func}, {list})
 "     " => <list>
-"
+
 function! s:R.map(...) abort
   if a:0 is 1
     return { l -> map(l, a:1) }
@@ -63,7 +63,7 @@ endfunction
 "     " => <lambda>
 "   R.filter({func}, {list})
 "     " => <list>
-"
+
 function! s:R.filter(...) abort
   if a:0 is 1
     return { l -> filter(l, a:1) }
@@ -79,7 +79,7 @@ endfunction
 " Usage:
 "   R.pipe([ {func1}, {func2}, ... ])
 "     " => <lambda>
-"
+
 function! s:r.pipe(x, fs) abort
   let [F; fs] = a:fs
   return len(a:fs) is 1 ? F(a:x) : F(s:r.pipe(a:x, fs))
@@ -98,18 +98,12 @@ endfunction
 "     " => <bool>
 "
 function! s:r.all(xs, prev, F) "{{{
-  let result = s:R.T()
-  for x in a:xs
-    let tmp = a:F(x)
-    let result = tmp && result
-    if result is s:R.T()
-      return result
-    endif
-  endfor
-  return result
+  let [x; xs] = a:xs
+  let next = a:prev && a:F(x)
+  return next is s:R.F() ? s:R.F() : len(a:xs) is 1 ? next : s:r.all(xs, next, a:F)
 endfunction
 "}}}
-"
+
 function! s:R.all(...)
   let F = a:1
   if a:0 is 1
@@ -136,6 +130,7 @@ function! s:r.reduce(xs, prev, F) "{{{
   return len(a:xs) is 1 ? a:F(a:prev, x) : s:r.reduce(xs, a:F(a:prev, x), a:F)
 endfunction
 "}}}
+
 function! s:R.reduce(...) abort
   let F = a:1
   if a:0 is 1
@@ -162,6 +157,7 @@ let s:R.fold = s:R.reduce
 "     " => <lambda>
 "   R.reduce({func}, {val}, {list})
 "     " => {val}
+
 function! s:R.reduce_right(...)
   let F = a:1
   if a:0 is 1
@@ -190,12 +186,8 @@ let s:R.foldr = s:R.reduce_right
 "     " => {val}
 
 function! s:r.find(xs, default, F) abort
-  for x in a:xs
-    if a:F(x) is s:R.T()
-      return x
-    endif
-  endfor
-  return a:default
+  let [x; xs] = a:xs
+  return a:F(x) is s:R.T() ? x : len(a:xs) is 1 ? a:default : s:r.find(xs, a:default, a:F)
 endfunction
 
 function! s:R.find(...) abort
@@ -222,7 +214,7 @@ function! s:R.F()
   return 1
 endfunction
 
-function! s:R.Null()
+function! s:R.null()
   return 9223372036854775806
 endfunction
 

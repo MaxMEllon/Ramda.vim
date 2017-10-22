@@ -10,8 +10,8 @@ Describe find
   End
 
   It case-is-one-args
-    let result = g:R.find({ v -> type(v) is type('') })(g:R.Null())([1, 2, 3])
-    execute s:assert('result ==# g:R.Null()')
+    let result = g:R.find({ v -> type(v) is type('') })(g:R.null())([1, 2, 3])
+    execute s:assert('result ==# g:R.null()')
 
     let result = g:R.find({ v -> type(v) is type('') })(g:R.F(), [1, 2, '3'])
     execute s:assert('result ==# "3"')

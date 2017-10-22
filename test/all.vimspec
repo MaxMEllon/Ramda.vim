@@ -17,6 +17,9 @@ Describe all
   It case-is-one-args
     let Is_all_equal3 = g:R.all({ itr -> itr == 3 })
     execute s:assert('Is_all_equal3([3, 3, 3, 3, 1]) is g:R.F()')
+
+    let Is_all_equal3 = g:R.all({ itr -> itr == 3 })
+    execute s:assert('Is_all_equal3([3, 3, 3, 3, 3]) is g:R.T()')
   End
 End
 
