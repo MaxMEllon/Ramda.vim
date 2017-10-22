@@ -12,4 +12,4 @@ test:
   pre:
     - vim --version
   override:
-    -  VIM_FZY_RAILS_TEST=1 ~/vim-themis/bin/themis --reporter dot --runtimepath ${HOME}/.vim -r test
+    - ~/vim-themis/bin/themis --reporter dot --runtimepath ${HOME}/.vim -r test
