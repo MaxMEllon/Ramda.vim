@@ -206,6 +206,46 @@ function! s:R.find(...) abort
 endfunction
 "}}}
 
+" R.contains{{{
+" Usage:
+"   R.contains({val})
+"     " => <lambda>
+"   R.contains({val}, {list})
+"     " => <bool>
+
+function! s:r.contains(xs, val)
+  let [x; xs] = a:xs
+  return x ==# a:val ? s:R.T() : len(a:xs) is 1 ? s:R.F() : s:r.contains(xs, a:val)
+endfunction
+
+function! s:R.contains(...)
+  let F = a:1
+  if a:0 is 1
+    return { xs -> s:r.contains(xs, a:1) }
+  elseif a:0 is 2
+    return s:r.contains(a:2, a:1)
+  endif
+endfunction
+
+let s:R.includes = s:R.contains
+"}}}
+
+" R.times{{{
+" Usage:
+"   R.times({val})
+"     " => <lambda>
+"   R.times({val}, {func})
+"     " => <list>
+function! s:R.times(...)
+  let F = a:1
+  if a:0 is 1
+    return { F -> s:R.map(F, range(a:1)) }
+  elseif a:0 is 2
+    return s:R.map(a:2, range(a:1))
+  endif
+endfunction
+"}}}
+
 function! s:R.T()
   return !0
 endfunction
