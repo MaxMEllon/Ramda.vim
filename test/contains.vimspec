@@ -22,7 +22,7 @@ Describe contains
     execute s:assert('Is_includes_3([1, 2, 3, 4, 5]) is g:R.T()')
 
     let Is_includes_5 = g:R.contains(5)
-    execute s:assert('Is_includes_3([1, 2, 3, 4, 6]) is g:R.F()')
+    execute s:assert('Is_includes_5([1, 2, 3, 4, 6]) is g:R.F()')
   End
 End
 

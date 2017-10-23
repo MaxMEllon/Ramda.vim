@@ -251,7 +251,7 @@ function! s:R.T()
 endfunction
 
 function! s:R.F()
-  return 1
+  return 0
 endfunction
 
 function! s:R.null() abort
