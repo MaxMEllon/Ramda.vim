@@ -1,0 +1,23 @@
+Describe times
+  Before all
+    let s:V = vital#of('vital')
+    " ramda
+    let s:Ramda = s:V.import('Ramda')
+    let g:R = s:Ramda.new()
+    " powerassert
+    let PowerAssert = s:V.import('Vim.PowerAssert')
+    let s:assert = PowerAssert.assert
+  End
+
+  It case-is-two-args
+    let result = g:R.times(10, { -> 1 })
+    execute s:assert('result == [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]')
+  End
+
+  It case-is-one-args
+    let Times = g:R.times(10)
+    execute s:assert('Times({ -> 2 }) == [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]')
+  End
+End
+
+" vim: foldmethod=marker
