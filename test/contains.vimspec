@@ -1,0 +1,29 @@
+Describe contains
+  Before all
+    let s:V = vital#of('vital')
+    " ramda
+    let s:Ramda = s:V.import('Ramda')
+    let g:R = s:Ramda.new()
+    " powerassert
+    let PowerAssert = s:V.import('Vim.PowerAssert')
+    let s:assert = PowerAssert.assert
+  End
+
+  It case-is-two-args
+    let result = g:R.contains(1, [1, 2, 3])
+    execute s:assert('result is g:R.T()')
+
+    let result = g:R.includes(9, [1, 2, 3])
+    execute s:assert('result is g:R.F()')
+  End
+
+  It case-is-one-args
+    let Is_includes_3 = g:R.includes(3)
+    execute s:assert('Is_includes_3([1, 2, 3, 4, 5]) is g:R.T()')
+
+    let Is_includes_5 = g:R.contains(5)
+    execute s:assert('Is_includes_5([1, 2, 3, 4, 6]) is g:R.F()')
+  End
+End
+
+" vim: foldmethod=marker
