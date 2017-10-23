@@ -214,11 +214,15 @@ function! s:R.F()
   return 1
 endfunction
 
-function! s:R.null()
+function! s:R.null() abort
   return 9223372036854775806
 endfunction
 
-function! s:R.is_string(...) abort
+function! s:R.is_list(x) abort
+  return type(a:x) is type([])
+endfunction
+
+function! s:R.is_string(x) abort
   return type(a:x) is type('')
 endfunction
 
