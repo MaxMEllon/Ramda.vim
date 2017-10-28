@@ -27,11 +27,11 @@ Describe pipe
     "     |> { xs -> len(xs) }
     let result =
           \g:R.pipe([
-          \    g:R.map({ _, v -> g:R.pipe([
+          \    g:R.map({ v -> g:R.pipe([
           \        g:R.reduce({ memo, v -> memo + v }, 0),
           \        { v -> v / 3 }])(v)
           \    }),
-          \    g:R.filter({ _, v -> 2 <= v }),
+          \    g:R.filter({ v -> 2 <= v }),
           \    { xs -> len(xs) }
           \])([[1, 2, 3], [1, 1, 1], [2, 1, 2], [2, 3, 3]])
     execute s:assert('result ==# 2')

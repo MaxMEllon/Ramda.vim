@@ -47,7 +47,7 @@ Plug 'MaxMEllon/Ramda.vim'
 ```vim
 let s:V = vital#of('vital')
 let s:R = s:V.import('Ramda').new()
-echo s:R.pipe(s:R.map({ _, v -> v + 2 }), s:R.filter({ _, v -> 4 <= v }))([1, 2, 3])
+echo s:R.pipe(s:R.map({ v -> v + 2 }), s:R.filter({ v -> 4 <= v }))([1, 2, 3])
 " => [4, 5]
 ```
 

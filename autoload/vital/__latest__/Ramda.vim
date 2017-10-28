@@ -47,10 +47,11 @@ let s:R.for_each = s:R.each
 "     " => <list>
 
 function! s:R.map(...) abort
+  let WrapedFunc = { k, v -> a:1(v, k) }
   if a:0 is 1
-    return { l -> map(l, a:1) }
+    return { l -> map(l, WrapedFunc) }
   elseif a:0 is 2
-    return map(a:2, a:1)
+    return map(a:2, WrapedFunc)
   else
     throw 'R.map expected 1~2 args, but actual ' . a:0 . ' args.'
   endif
@@ -65,10 +66,11 @@ endfunction
 "     " => <list>
 
 function! s:R.filter(...) abort
+  let WrapedFunc = { k, v -> a:1(v, k) }
   if a:0 is 1
-    return { l -> filter(l, a:1) }
+    return { l -> filter(l, WrapedFunc) }
   elseif a:0 is 2
-    return filter(a:2, a:1)
+    return filter(a:2, WrapedFunc)
   else
     throw 'R.filter expected 1~2 args, but actual ' . a:0 . ' args.'
   endif
@@ -98,9 +100,14 @@ endfunction
 "     " => <bool>
 "
 function! s:r.all(xs, prev, F) "{{{
-  let [x; xs] = a:xs
-  let next = a:prev && a:F(x)
-  return next is s:R.F() ? s:R.F() : len(a:xs) is 1 ? next : s:r.all(xs, next, a:F)
+  let next = a:prev
+  for x in a:xs
+    let next = next && a:F(x)
+    if next is s:R.F()
+      return s:R.F()
+    endif
+  endfor
+  return next
 endfunction
 "}}}
 
@@ -126,8 +133,11 @@ endfunction
 "     " => {val}
 "
 function! s:r.reduce(xs, prev, F) "{{{
-  let [x; xs] = a:xs
-  return len(a:xs) is 1 ? a:F(a:prev, x) : s:r.reduce(xs, a:F(a:prev, x), a:F)
+  let prev = a:prev
+  for x in a:xs
+    let prev = a:F(prev, x)
+  endfor
+  return prev
 endfunction
 "}}}
 
@@ -186,8 +196,12 @@ let s:R.foldr = s:R.reduce_right
 "     " => {val}
 
 function! s:r.find(xs, default, F) abort
-  let [x; xs] = a:xs
-  return a:F(x) is s:R.T() ? x : len(a:xs) is 1 ? a:default : s:r.find(xs, a:default, a:F)
+  for x in a:xs
+    if a:F(x)
+      return x
+    endif
+  endfor
+  return a:default
 endfunction
 
 function! s:R.find(...) abort
@@ -214,8 +228,12 @@ endfunction
 "     " => <bool>
 
 function! s:r.contains(xs, val)
-  let [x; xs] = a:xs
-  return x ==# a:val ? s:R.T() : len(a:xs) is 1 ? s:R.F() : s:r.contains(xs, a:val)
+  for x in a:xs
+    if x ==# a:val
+      return s:R.T()
+    endif
+  endfor
+  return s:R.F()
 endfunction
 
 function! s:R.contains(...)

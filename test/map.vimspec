@@ -10,12 +10,12 @@ Describe map
   End
 
   It case-is-two-args
-    let result = g:R.map({ k, v -> v + 1 }, [1, 2, 3])
+    let result = g:R.map({ v -> v + 1 }, [1, 2, 3])
     execute s:assert('result ==# [2, 3, 4]')
   End
 
   It case-is-one-args
-    let result = g:R.map({ k, v -> v + 2 })([1, 2, 3])
+    let result = g:R.map({ v -> v + 2 })([1, 2, 3])
     execute s:assert('result ==# [3, 4, 5]')
   End
 End
