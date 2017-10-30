@@ -16,20 +16,17 @@ function! s:new() abort
 endfunction
 
 " R.each {{{
-" Usage:
-"   R.each({func})
-"     " => <lambda>
-"   R.each({func}, {list})
-"     " => <list>
-
 function! s:_R.each(...) abort
-  let F = a:1
-  let s:E = { xs, F -> execute(join(['for x in xs', 'call F(x, index(xs, x))', 'endfor'], "\n")) }
+  function! E(xs, F) closure
+    for x in a:xs
+      call a:F(x, index(a:xs, x))
+    endfor
+  endfunction
 
   if a:0 is 1
-    return { xs -> s:E(xs, F) }
+    return { xs -> E(xs, a:1) }
   elseif a:0 is 2
-    call s:E(a:2, F)
+    call E(a:2, a:1)
   else
     throw 'R.each expected 1~2 args, but actual ' . a:0 . ' args.'
   endif
@@ -40,12 +37,6 @@ let s:_R.for_each = s:_R.each
 " }}}
 
 " R.map{{{
-" Usage:
-"   R.map({func})
-"     " => <lambda>
-"   R.map({func}, {list})
-"     " => <list>
-
 function! s:_R.map(...) abort
   let WrapedFunc = { k, v -> a:1(v, k) }
   if a:0 is 1
@@ -59,12 +50,6 @@ endfunction
 "}}}
 
 " R.filter{{{
-" Usage:
-"   R.filter({func})
-"     " => <lambda>
-"   R.filter({func}, {list})
-"     " => <list>
-
 function! s:_R.filter(...) abort
   let WrapedFunc = { k, v -> a:1(v, k) }
   if a:0 is 1
@@ -78,28 +63,20 @@ endfunction
 "}}}
 
 " R.pipe{{{
-" Usage:
-"   R.pipe([ {func1}, {func2}, ... ])
-"     " => <lambda>
-
-function! s:_r.pipe(x, fs) abort
-  let [F; fs] = a:fs
-  return len(a:fs) is 1 ? F(a:x) : F(s:_r.pipe(a:x, fs))
+function! s:_r.pipe(x, xs) abort
+  let [F; fs] = a:xs
+  let x = a:x
+  return len(a:xs) == 1 ? F(x) : F(s:_r.pipe(x, fs))
 endfunction
 
-function! s:_R.pipe(fs) abort
-  return { x -> s:_r.pipe(x, reverse(a:fs)) }
+function! s:_R.pipe(...) abort
+  let xs = reverse(copy(a:000))
+  return { x -> s:_r.pipe(x, xs) }
 endfunction
 "}}}
 
 " R.all{{{
-" Usage:
-"   R.all({func})
-"     " => <lambda>
-"   R.all({func}, {list})
-"     " => <bool>
-"
-function! s:_r.all(xs, prev, F) "{{{
+function! s:_r.all(xs, prev, F)
   let next = a:prev
   for x in a:xs
     let next = next && a:F(x)
@@ -109,7 +86,6 @@ function! s:_r.all(xs, prev, F) "{{{
   endfor
   return next
 endfunction
-"}}}
 
 function! s:_R.all(...)
   let F = a:1
@@ -124,22 +100,13 @@ endfunction
 "}}}
 
 " R.reduce {{{
-" Usage:
-"   R.reduce({func})
-"     " => <lambda>
-"   R.reduce({func}, {val})
-"     " => <lambda>
-"   R.reduce({func}, {val}, {list})
-"     " => {val}
-"
-function! s:_r.reduce(xs, prev, F) "{{{
+function! s:_r.reduce(xs, prev, F)
   let prev = a:prev
   for x in a:xs
     let prev = a:F(prev, x)
   endfor
   return prev
 endfunction
-"}}}
 
 function! s:_R.reduce(...) abort
   let F = a:1
@@ -159,15 +126,7 @@ endfunction
 let s:_R.fold = s:_R.reduce
 "}}}
 
-" R.reduce_right{{{
-" Usage:
-"   R.reduce({func})
-"     " => <lambda>
-"   R.reduce({func}, {val})
-"     " => <lambda>
-"   R.reduce({func}, {val}, {list})
-"     " => {val}
-
+" R.reduce_right {{{
 function! s:_R.reduce_right(...)
   let F = a:1
   if a:0 is 1
@@ -184,17 +143,9 @@ function! s:_R.reduce_right(...)
 endfunction
 
 let s:_R.foldr = s:_R.reduce_right
-"}}}
+" }}}
 
-" R.find{{{
-" Usage:
-"   R.find({func})
-"     " => <lambda>
-"   R.find({func}, {val})
-"     " => <lambda>
-"   R.find({func}, {val}, {list})
-"     " => {val}
-
+" R.find {{{
 function! s:_r.find(xs, default, F) abort
   for x in a:xs
     if a:F(x)
@@ -218,15 +169,33 @@ function! s:_R.find(...) abort
     throw 'R.find expected 1~3 args, but actual ' . a:0 . 'args.'
   endif
 endfunction
-"}}}
+" }}}
 
-" R.contains{{{
-" Usage:
-"   R.contains({val})
-"     " => <lambda>
-"   R.contains({val}, {list})
-"     " => <bool>
+" R.find_index {{{
+function! s:_r.find_index(xs, F) abort
+  let j = 0
+  for x in a:xs
+    if a:F(x)
+      return j
+    endif
+    let j += 1
+  endfor
+  return -1
+endfunction
 
+function! s:_R.find_index(...)
+  let F = a:1
+  if a:0 is 1
+    return { xs -> s:_r.find_index(xs, F) }
+  elseif a:0 is 2
+    return s:_r.find_index(a:2, F)
+  else
+    throw 'R.find_index expected 1~2 args, but actual ' . a:0 . 'args.'
+  endif
+endfunction
+" }}}
+
+" R.contains {{{
 function! s:_r.contains(xs, val)
   for x in a:xs
     if x ==# a:val
@@ -246,14 +215,9 @@ function! s:_R.contains(...)
 endfunction
 
 let s:_R.includes = s:_R.contains
-"}}}
+" }}}
 
-" R.times{{{
-" Usage:
-"   R.times({val})
-"     " => <lambda>
-"   R.times({val}, {func})
-"     " => <list>
+" R.times {{{
 function! s:_R.times(...)
   let F = a:1
   if a:0 is 1

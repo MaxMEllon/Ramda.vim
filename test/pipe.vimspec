@@ -11,10 +11,10 @@ Describe pipe
 
   It case-is-one-args
     let Func =
-          \g:R.pipe([
+          \g:R.pipe(
           \    { l -> map(l, { k, v -> v + 1 }) },
           \    { l -> filter(l, { k, v -> 2 < v }) }
-          \])
+          \)
     execute s:assert('Func([1, 2, 3]) ==# [3, 4]')
   End
 
@@ -26,14 +26,14 @@ Describe pipe
     "     |> R.filter({ _, v -> 2 <= v })
     "     |> { xs -> len(xs) }
     let result =
-          \g:R.pipe([
-          \    g:R.map({ v -> g:R.pipe([
+          \g:R.pipe(
+          \    g:R.map({ v -> g:R.pipe(
           \        g:R.reduce({ memo, v -> memo + v }, 0),
-          \        { v -> v / 3 }])(v)
+          \        { v -> v / 3 })(v)
           \    }),
           \    g:R.filter({ v -> 2 <= v }),
           \    { xs -> len(xs) }
-          \])([[1, 2, 3], [1, 1, 1], [2, 1, 2], [2, 3, 3]])
+          \)([[1, 2, 3], [1, 1, 1], [2, 1, 2], [2, 3, 3]])
     execute s:assert('result ==# 2')
   End
 End
